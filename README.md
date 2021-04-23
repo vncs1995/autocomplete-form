@@ -25,3 +25,7 @@ react-native-safe-area-context
 
 axios
 It's needed to make REST api calls
+
+The auto complete approach for lists works for low sized lists
+It'd better if where a button to search with the complete text
+It prevents event throttling caused by watch everything user digits
