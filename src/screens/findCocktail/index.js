@@ -32,7 +32,10 @@ const FindCocktailScreen = ({navigation}) => {
       <SearchBar
         value={cocktailName}
         onPressIcon={() => navigation.pop()}
-        onPressCancel={() => setCocktailName('')}
+        onPressCancel={() => {
+          reset();
+          setCocktailName('');
+        }}
         onChangeText={text => setCocktailName(text)}
       />
       <BasePage>
