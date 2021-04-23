@@ -1,9 +1,15 @@
 import axios from 'axios';
 
+const api = axios.create({
+  baseURL: 'https://www.thecocktaildb.com/api/json/v1/1/',
+  timeout: 1000,
+});
+
 export const Types = {
   SEARCH_DRINKS: 'drinks/SEARCH_DRINKS',
   SEARCH_DRINKS_SUCCESS: 'drinks/SEARCH_DRINKS_SUCCESS',
   SEARCH_DRINKS_ERROR: 'drinks/SEARCH_DRINKS_ERROR',
+  SEARCH_DRINKS_RESET: 'drinks/SEARCH_DRINKS_RESET',
 };
 
 // Reducer
@@ -17,11 +23,13 @@ const initialState = {
 export default function drinksReducer(state = initialState, action) {
   switch (action.type) {
     case Types.SEARCH_DRINKS:
-      return {loading: true, ...state};
+      return {...state, loading: true};
     case Types.SEARCH_DRINKS_SUCCESS:
-      return {drinks: [...action.payload], loading: false, ...state};
+      return {...state, drinks: action.payload, loading: false};
     case Types.SEARCH_DRINKS_ERROR:
-      return {drinks: [], loading: false, error: action.payload, ...state};
+      return {...state, drinks: [], loading: false, error: action.payload};
+    case Types.SEARCH_DRINKS_RESET:
+      return initialState;
     default:
       return state;
   }
@@ -29,15 +37,19 @@ export default function drinksReducer(state = initialState, action) {
 
 // Action Creators
 
-export const fetchProduct = productName => async dispatch => {
+export const fetchDrinks = drinkName => async dispatch => {
   dispatch({type: Types.SEARCH_DRINKS});
 
   try {
-    const responseProduct = await axios.get(
-      `https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${productName}`,
-    );
-    dispatch({type: Types.SEARCH_DRINKS_SUCCESS, payload: responseProduct});
+    const responseDrink = await api.get(`search.php?s=${drinkName}`);
+    dispatch({
+      type: Types.SEARCH_DRINKS_SUCCESS,
+      payload: responseDrink.data.drinks,
+    });
   } catch (error) {
-    dispatch({type: Types.SEARCH_DRINKS_ERROR, error: error});
+    dispatch({type: Types.SEARCH_DRINKS_ERROR, payload: error});
   }
 };
+
+export const resetDrinks = () => dispatch =>
+  dispatch({type: Types.SEARCH_DRINKS_RESET});

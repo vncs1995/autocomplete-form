@@ -22,3 +22,6 @@ react-native-screens
 react-native-safe-area-context 
 @react-native-community/masked-view
 @react-navigation/stack
+
+axios
+It's needed to make REST api calls
